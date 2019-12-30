@@ -16,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,6 +27,38 @@ public class ProductController {
 
     @Autowired
     private ProductDao productDao;
+
+    // *************************************** methode implementees *************
+
+    //Calculer la marge de produit
+    @RequestMapping(value = "/AdminProduits", method = RequestMethod.GET)
+    public String calculerMargeProduit() {
+        String result = "{\n";
+
+        List<Product> produits = productDao.findAll();
+        for(Product product: produits){
+            result += "\n"+product.toString()+":"+(product.getPrix()-product.getPrixAchat())+"\n";
+        }
+        result += "\n}";
+
+        return result;
+    }
+
+    //tri par ordre alphabetique
+    @RequestMapping(value = "/triProduits", method = RequestMethod.GET)
+    public MappingJacksonValue trierProduitsParOrdreAlphabetique(){
+        Iterable<Product> produits = productDao.findByOrderByNomAsc();
+
+        SimpleBeanPropertyFilter monFiltre = SimpleBeanPropertyFilter.serializeAll();
+
+        FilterProvider listDeNosFiltres = (FilterProvider) new SimpleFilterProvider().getDefaultFilter();
+
+        MappingJacksonValue produitsFiltres = new MappingJacksonValue(produits);
+
+        produitsFiltres.setFilters(listDeNosFiltres);
+
+        return produitsFiltres;
+    }
 
 
     //Récupérer la liste des produits
@@ -69,6 +102,13 @@ public class ProductController {
 
     public ResponseEntity<Void> ajouterProduit(@Valid @RequestBody Product product) {
 
+        // condition ajoutee
+        if((product.getPrix()+product.getPrixAchat()) == 0){
+            //throw new ProduitNonAjouteException("Produit non ajoutee: le prix de vente est 0.");
+            return (ResponseEntity<Void>) ResponseEntity.status(400);
+        }
+
+
         Product productAdded =  productDao.save(product);
 
         if (productAdded == null)
@@ -102,7 +142,6 @@ public class ProductController {
 
         return productDao.chercherUnProduitCher(400);
     }
-
 
 
 }
