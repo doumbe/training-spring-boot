@@ -105,9 +105,8 @@ public class ProductController {
 
         // condition ajoutee
         if(productAdded.getPrixAchat()==0) { //((productAdded.getPrix()+productAdded.getPrixAchat())==0)
-            throw new ProduitGratuitException("Ce produit est grautuit: le prix de vente est 0.");
+            throw new ProduitGratuitException("Le produit avec l'id "+productAdded.getId()+" est gratuit: le prix de vente est 0.");
         }
-
 
         if (productAdded == null)
             return ResponseEntity.noContent().build();
@@ -121,11 +120,11 @@ public class ProductController {
         return ResponseEntity.created(location).build();
     }
 
-    @DeleteMapping (value = "/Produits/{id}")
+    /*@DeleteMapping (value = "/Produits/{id}")
     public void supprimerProduit(@PathVariable int id) {
 
         productDao.delete(id);
-    }
+    }*/
 
     @PutMapping (value = "/Produits")
     public void updateProduit(@RequestBody Product product) {
