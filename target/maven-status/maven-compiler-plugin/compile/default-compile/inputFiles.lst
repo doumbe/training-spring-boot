@@ -1,6 +1,7 @@
 /home/deptinfo/Documents/projet_spring_boot/training-spring-boot/src/main/java/com/ecommerce/microcommerce/web/exceptions/ProduitIntrouvableException.java
 /home/deptinfo/Documents/projet_spring_boot/training-spring-boot/src/main/java/com/ecommerce/microcommerce/web/controller/ProductController.java
 /home/deptinfo/Documents/projet_spring_boot/training-spring-boot/src/main/java/com/ecommerce/microcommerce/dao/ProductDao.java
+/home/deptinfo/Documents/projet_spring_boot/training-spring-boot/src/main/java/com/ecommerce/microcommerce/web/exceptions/ProduitGratuitException.java
 /home/deptinfo/Documents/projet_spring_boot/training-spring-boot/src/main/java/com/ecommerce/microcommerce/configuration/SwaggerConfig.java
 /home/deptinfo/Documents/projet_spring_boot/training-spring-boot/src/main/java/com/ecommerce/microcommerce/MicrocommerceApplication.java
 /home/deptinfo/Documents/projet_spring_boot/training-spring-boot/src/main/java/com/ecommerce/microcommerce/model/Product.java

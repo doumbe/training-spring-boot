@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
+import com.ecommerce.microcommerce.web.exceptions.ProduitGratuitException;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
@@ -99,17 +99,15 @@ public class ProductController {
 
     //ajouter un produit
     @PostMapping(value = "/Produits")
-
     public ResponseEntity<Void> ajouterProduit(@Valid @RequestBody Product product) {
 
+        Product productAdded =  productDao.saveAndFlush(product);
+
         // condition ajoutee
-        if((product.getPrix()+product.getPrixAchat()) == 0){
-            //throw new ProduitNonAjouteException("Produit non ajoutee: le prix de vente est 0.");
-            return (ResponseEntity<Void>) ResponseEntity.status(400);
+        if(productAdded.getPrixAchat()==0) { //((productAdded.getPrix()+productAdded.getPrixAchat())==0)
+            throw new ProduitGratuitException("Ce produit est grautuit: le prix de vente est 0.");
         }
 
-
-        Product productAdded =  productDao.save(product);
 
         if (productAdded == null)
             return ResponseEntity.noContent().build();
