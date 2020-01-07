@@ -3,12 +3,14 @@ package com.ecommerce.microcommerce.web.controller;
 import com.ecommerce.microcommerce.dao.ProductDao;
 import com.ecommerce.microcommerce.model.Product;
 import com.ecommerce.microcommerce.web.exceptions.ProduitIntrouvableException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +18,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.ecommerce.microcommerce.web.exceptions.ProduitGratuitException;
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
+import org.json.JSONObject;
 
 @Api( description="API pour es opérations CRUD sur les produits.")
 
@@ -32,32 +35,25 @@ public class ProductController {
 
     //Calculer la marge de produit
     @RequestMapping(value = "/AdminProduits", method = RequestMethod.GET)
-    public String calculerMargeProduit() {
-        String result = "{\n";
-
+    public MappingJacksonValue calculerMargeProduit() {
+        Map<String, Integer> result = new HashMap<>();
         List<Product> produits = productDao.findAll();
         for(Product product: produits){
-            result += "\n"+product.toString()+":"+(product.getPrix()-product.getPrixAchat())+"\n";
+            result.put(product.toString(), (product.getPrix()-product.getPrixAchat()));
         }
-        result += "\n}";
-
-        return result;
+        MappingJacksonValue resultJson = new MappingJacksonValue(result);
+        return resultJson;
     }
 
     //tri par ordre alphabetique
     @RequestMapping(value = "/triProduits", method = RequestMethod.GET)
+
     public MappingJacksonValue trierProduitsParOrdreAlphabetique(){
-        Iterable<Product> produits = productDao.findByOrderByNomAsc();
+        List<Product> produitsTries = productDao.findByOrderByNomAsc();
 
-        SimpleBeanPropertyFilter monFiltre = SimpleBeanPropertyFilter.serializeAll();
+        MappingJacksonValue produitsTriesJson = new MappingJacksonValue(produitsTries);
 
-        FilterProvider listDeNosFiltres = (FilterProvider) new SimpleFilterProvider().getDefaultFilter();
-
-        MappingJacksonValue produitsFiltres = new MappingJacksonValue(produits);
-
-        produitsFiltres.setFilters(listDeNosFiltres);
-
-        return produitsFiltres;
+        return produitsTriesJson;
     }
 
 
